@@ -3,262 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RC Car Setup Startseite</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f5;
-    }
-
-    header {
-      background: #333;
-      color: white;
-      text-align: center;
-      padding: 15px 0;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: row;
-      padding: 20px;
-    }
-
-    .setup {
-      flex: 2;
-      margin-right: 20px;
-      text-align: center;
-      position: relative;
-    }
-
-    .setup img {
-      max-width: 100%;
-      height: auto;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    .input-field {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 5px;
-      font-size: 12px;
-      cursor: move;
-    }
-
-    .problems {
-      flex: 1;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 15px;
-      overflow-y: auto;
-      max-height: 500px;
-    }
-
-    .problems h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .problems ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .problems li {
-      margin-bottom: 10px;
-      cursor: pointer;
-      padding: 10px;
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-    }
-
-    .problems li:hover {
-      background: #eef;
-    }
-
-    .recommendations {
-      margin-top: 20px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 15px;
-    }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const fields = document.querySelectorAll('.input-field');
-
-      // Positionen aus localStorage laden
-      fields.forEach(field => {
-        const id = field.getAttribute('data-id');
-        const savedPosition = localStorage.getItem(`field-position-${id}`);
-        if (savedPosition) {
-          const { left, top } = JSON.parse(savedPosition);
-          field.style.left = left;
-          field.style.top = top;
-        }
-      });
-
-      fields.forEach(field => {
-        let isDragging = false;
-        let shiftX, shiftY;
-
-        field.addEventListener('mousedown', (e) => {
-          isDragging = true;
-          const fieldEl = e.target.closest('.input-field');
-          shiftX = e.clientX - fieldEl.getBoundingClientRect().left;
-          shiftY = e.clientY - fieldEl.getBoundingClientRect().top;
-
-          function moveAt(pageX, pageY) {
-            fieldEl.style.left = pageX - shiftX + 'px';
-            fieldEl.style.top = pageY - shiftY + 'px';
-          }
-
-          function onMouseMove(event) {
-            if (isDragging) {
-              moveAt(event.pageX, event.pageY);
-            }
-          }
-
-          document.addEventListener('mousemove', onMouseMove);
-
-          document.addEventListener('mouseup', () => {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-
-            // Position im localStorage speichern
-            const id = fieldEl.getAttribute('data-id');
-            const position = {
-              left: fieldEl.style.left,
-              top: fieldEl.style.top
-            };
-            localStorage.setItem(`field-position-${id}`, JSON.stringify(position));
-          }, { once: true });
-        });
-
-        field.ondragstart = () => false;
-      });
-
-      // Export-Funktion hinzufügen
-      const exportButton = document.createElement('button');
-      exportButton.textContent = 'Positionen exportieren';
-      exportButton.style.margin = '20px';
-      exportButton.addEventListener('click', () => {
-        const positions = {};
-        fields.forEach(field => {
-          const id = field.getAttribute('data-id');
-          const savedPosition = localStorage.getItem(`field-position-${id}`);
-          if (savedPosition) {
-            positions[id] = JSON.parse(savedPosition);
-          }
-        });
-        console.log('Exportierte Positionen:', positions);
-        alert('Positionen wurden in der Konsole exportiert.');
-      });
-      document.body.appendChild(exportButton);
-    });
-  </script>
+  <title>RC Car Setup</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>RC Car Setup Konfigurator</h1>
+    <h1>RC Car Setup Tool</h1>
   </header>
 
-  <div class="container">
-    <!-- Setup-Bereich -->
-    <div class="setup">
-      <h2>Fahrzeug-Setup</h2>
-      <img src="https://drive.google.com/uc?export=view&id=1tU2LKiupw5ez_jO97U387yM8tTOvV3uC" alt="Setup Bild">
-
-      <!-- Dropdown-Menüs -->
-      <div class="input-field" style="top: 50px; left: 100px;" data-id="spurweite">
-        <label for="spurweite">Spurweite vorne:</label>
-        <select id="spurweite">
-          <option value="190">190 mm</option>
-          <option value="200">200 mm</option>
-          <option value="210">210 mm</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 100px; left: 100px;" data-id="radsturz">
-        <label for="radsturz">Radsturz vorne:</label>
-        <select id="radsturz">
-          <option value="-1">-1°</option>
-          <option value="-2">-2°</option>
-          <option value="-3">-3°</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 150px; left: 100px;" data-id="daempfer">
-        <label for="daempfer">Dämpfer-Öl vorne:</label>
-        <select id="daempfer">
-          <option value="300">300 cSt</option>
-          <option value="400">400 cSt</option>
-          <option value="500">500 cSt</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 200px; left: 100px;" data-id="reifen">
-        <label for="reifen">Reifentyp vorne:</label>
-        <select id="reifen">
-          <option value="slicks">Slicks</option>
-          <option value="halbprofil">Halbprofil</option>
-          <option value="profil">Profilreifen</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 250px; left: 100px;" data-id="differential">
-        <label for="differential">Differentialtyp:</label>
-        <select id="differential">
-          <option value="spool">Spool</option>
-          <option value="kugeldiff">Kugeldifferential</option>
-          <option value="zahnrad">Zahnrad</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 300px; left: 100px;" data-id="ackermann">
-        <label for="ackermann">Ackermann-Winkel:</label>
-        <select id="ackermann">
-          <option value="0">0°</option>
-          <option value="10">10°</option>
-          <option value="20">20°</option>
-        </select>
-      </div>
-
-      <div class="input-field" style="top: 350px; left: 100px;" data-id="rollcenter">
-        <label for="rollcenter">Rollcenter:</label>
-        <select id="rollcenter">
-          <option value="hoch">Hoch</option>
+  <main>
+    <div class="car-container">
+      <img src="https://drive.google.com/uc?export=view&id=1tU2LKiupw5ez_jO97U387yM8tTOvV3uC" alt="RC Car Bild" style="width: 80%; border: 2px solid #000;">
+      <div>
+        <label for="tires">Reifenwahl:</label>
+        <select id="tires">
+          <option value="weich">Weich</option>
           <option value="mittel">Mittel</option>
-          <option value="niedrig">Niedrig</option>
+          <option value="hart">Hart</option>
         </select>
       </div>
     </div>
+  </main>
 
-    <!-- Problemauswahl-Bereich -->
-    <div class="problems">
-      <h2>Problemauswahl</h2>
-      <ul>
-        <li>Untersteuern - Kurveneingang (Off-Throttle)</li>
-        <li>Untersteuern - Kurvenausgang (On-Throttle)</li>
-        <li>Übersteuern - Kurvenmitte (Off-Throttle)</li>
-        <li>Traktionsrollen - Kurvenmitte</li>
-        <li>Geradeausstabilität</li>
-      </ul>
-
-      <!-- Empfohlene Änderungen -->
-      <div class="recommendations">
-        <h2>Empfohlene Änderungen</h2>
-        <p>Bitte wählen Sie ein Problem, um Empfehlungen anzuzeigen.</p>
-      </div>
-    </div>
-  </div>
+  <script src="script.js"></script>
 </body>
 </html>
